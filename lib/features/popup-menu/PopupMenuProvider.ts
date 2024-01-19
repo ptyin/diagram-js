@@ -1,3 +1,5 @@
+import { VNode } from '@bpmn-io/diagram-js-ui';
+
 import { PopupMenuTarget } from './PopupMenu';
 
 export type PopupMenuEntryAction = (event: Event, entry: PopupMenuEntry, action?: string) => any;
@@ -30,6 +32,8 @@ export type PopupMenuHeaderEntry = {
 export type PopupMenuHeaderEntries = PopupMenuHeaderEntry[];
 
 export type PopupMenuProviderHeaderEntriesCallback = (entries: PopupMenuHeaderEntries) => PopupMenuHeaderEntries;
+
+export type PopupMenuNoSearchResultsCallback = (value: string) => VNode;
 
 /**
  * An interface to be implemented by a popup menu provider.
@@ -97,4 +101,17 @@ export default interface PopupMenuProvider {
    * @param target
    */
   getHeaderEntries?(target: PopupMenuTarget): PopupMenuProviderHeaderEntriesCallback | PopupMenuHeaderEntries;
+
+  /**
+   * Returns a callback that returns a VNode to be rendered when there are no search results.
+   *
+   * @example
+   *
+   * ```javascript
+   * getNoSearchResultsCallback() {
+   *   return (value) => No results for <strong>{ value }</strong>;
+   * }
+   * ```
+   */
+  getNoSearchResultsCallback?(): PopupMenuNoSearchResultsCallback;
 }

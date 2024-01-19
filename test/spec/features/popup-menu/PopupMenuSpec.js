@@ -22,6 +22,8 @@ import { createEvent as globalEvent } from '../../../util/MockEvents';
 import popupMenuModule from 'lib/features/popup-menu';
 import modelingModule from 'lib/features/modeling';
 
+import { html } from 'lib/ui';
+
 
 describe('features/popup-menu', function() {
 
@@ -1394,6 +1396,58 @@ describe('features/popup-menu', function() {
       }));
 
     });
+
+
+    it('should render entry if no search results', inject(async function(popupMenu) {
+
+      // given
+      popupMenu.registerProvider('test-menu', testMenuProvider);
+      popupMenu.open({}, 'test-menu', { x: 100, y: 100 }, { search: true });
+
+      // when
+      await triggerSearch('foobar');
+
+      // then
+      var shownEntries = queryPopupAll('.entry');
+
+      expect(shownEntries).to.have.length(0);
+
+      var noSearchResultsNode = queryPopup('.djs-popup-no-results');
+
+      expect(noSearchResultsNode).to.exist;
+      expect(noSearchResultsNode.textContent).to.eql('No matching entries found.');
+    }));
+
+
+    it('should render custom entry if no search results', inject(async function(popupMenu) {
+
+      // given
+      popupMenu.registerProvider('test-menu', {
+        ...testMenuProvider,
+        getNoSearchResultsCallback: () => {
+          return value => html`<h1 id="custom">${ value }</h1>`;
+        }
+      });
+
+      popupMenu.open({}, 'test-menu', { x: 100, y: 100 }, { search: true });
+
+      // when
+      await triggerSearch('foobar');
+
+      // then
+      var shownEntries = queryPopupAll('.entry');
+
+      expect(shownEntries).to.have.length(0);
+
+      var noSearchResultsNode = queryPopup('.djs-popup-no-results');
+
+      expect(noSearchResultsNode).to.exist;
+
+      var customNode = domQuery('#custom', noSearchResultsNode);
+
+      expect(customNode).to.exist;
+      expect(customNode.textContent).to.eql('foobar');
+    }));
 
   });
 
