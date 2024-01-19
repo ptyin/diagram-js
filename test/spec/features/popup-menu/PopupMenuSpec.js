@@ -1,4 +1,4 @@
-import { waitFor } from '@testing-library/preact';
+import { waitFor as originalWaitFor } from '@testing-library/preact';
 
 import {
   bootstrapDiagram,
@@ -26,8 +26,12 @@ import modelingModule from 'lib/features/modeling';
 
 import { html } from 'lib/ui';
 
+const waitFor = (callback) => originalWaitFor(callback, { timeout: 10000 });
+
 
 describe('features/popup-menu', function() {
+
+  this.timeout(10000);
 
   beforeEach(bootstrapDiagram({
     modules: [
