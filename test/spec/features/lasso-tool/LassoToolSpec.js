@@ -102,7 +102,6 @@ describe('features/lasso-tool', function() {
         height: 220
       };
 
-
       // when
       lassoTool.select(elements, bbox);
 
@@ -113,6 +112,34 @@ describe('features/lasso-tool', function() {
       expect(selectedElements[0]).to.equal(childShape2);
       expect(selectedElements[1]).to.equal(childShape3);
     }));
+
+
+    it('shoud add elements in bbox to selected elements', inject(function(lassoTool, selection) {
+
+      // given
+      selection.select([ childShape ]);
+
+      var elements = [ childShape2, childShape3 ];
+
+      var bbox = {
+        x: 175,
+        y: 0,
+        width: 120,
+        height: 220
+      };
+
+      // when
+      lassoTool.select(elements, bbox, true);
+
+      // then
+      var selectedElements = selection.get();
+
+      expect(selectedElements.length).to.equal(3);
+      expect(selectedElements[0]).to.equal(childShape);
+      expect(selectedElements[1]).to.equal(childShape2);
+      expect(selectedElements[2]).to.equal(childShape3);
+    }));
+
   });
 
 
