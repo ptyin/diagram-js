@@ -33,7 +33,9 @@ export type PopupMenuHeaderEntries = PopupMenuHeaderEntry[];
 
 export type PopupMenuProviderHeaderEntriesCallback = (entries: PopupMenuHeaderEntries) => PopupMenuHeaderEntries;
 
-export type PopupMenuNoSearchResultsCallback = (value: string) => VNode;
+export type PopupMenuEmptyPlaceholder = VNode;
+
+export type PopupMenuEmptyPlaceholderProvider = (search: string) => PopupMenuEmptyPlaceholder;
 
 /**
  * An interface to be implemented by a popup menu provider.
@@ -103,15 +105,18 @@ export default interface PopupMenuProvider {
   getHeaderEntries?(target: PopupMenuTarget): PopupMenuProviderHeaderEntriesCallback | PopupMenuHeaderEntries;
 
   /**
-   * Returns a callback that returns a VNode to be rendered when there are no search results.
+   * Returns a component to be displayed when no popup menu entries
+   * match a given search query.
    *
    * @example
    *
    * ```javascript
-   * getNoSearchResultsCallback() {
-   *   return (value) => No results for <strong>{ value }</strong>;
+   * getEmptyPlaceholder() {
+   *   return (search) => <>
+   *     No results for <strong>{ search }</strong>
+   *   <>;
    * }
    * ```
    */
-  getNoSearchResultsCallback?(): PopupMenuNoSearchResultsCallback;
+  getEmptyPlaceholder?(): PopupMenuEmptyPlaceholderProvider | PopupMenuEmptyPlaceholder;
 }

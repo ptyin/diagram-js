@@ -1449,7 +1449,12 @@ describe('features/popup-menu', function() {
     it('should render entry if no search results', inject(async function(popupMenu) {
 
       // given
-      popupMenu.registerProvider('test-menu', testMenuProvider);
+      const menuProvider = {
+        ...testMenuProvider,
+        getEmptyPlaceholder: () => 'No matching entries found.'
+      };
+
+      popupMenu.registerProvider('test-menu', menuProvider);
       popupMenu.open({}, 'test-menu', { x: 100, y: 100 }, { search: true });
 
       // when
@@ -1472,12 +1477,14 @@ describe('features/popup-menu', function() {
     it('should render custom entry if no search results', inject(async function(popupMenu) {
 
       // given
-      popupMenu.registerProvider('test-menu', {
+      const menuProvider = {
         ...testMenuProvider,
-        getNoSearchResultsCallback: () => {
-          return value => html`<h1 id="custom">${ value }</h1>`;
+        getEmptyPlaceholder: () => {
+          return search => html`<h1 class="custom-empty-placeholder">${ search }</h1>`;
         }
-      });
+      };
+
+      popupMenu.registerProvider('test-menu', menuProvider);
 
       popupMenu.open({}, 'test-menu', { x: 100, y: 100 }, { search: true });
 
@@ -1495,7 +1502,7 @@ describe('features/popup-menu', function() {
 
       expect(noSearchResultsNode).to.exist;
 
-      var customNode = domQuery('#custom', noSearchResultsNode);
+      var customNode = domQuery('.custom-empty-placeholder', noSearchResultsNode);
 
       expect(customNode).to.exist;
       expect(customNode.textContent).to.eql('foobar');
